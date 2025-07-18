@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
+</div>
+<h2>My Profile</h2>
+<p id="userinfo"></p>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCpuyyrTBwZJOn-tfyX6r1BQ_p7f65zYV0",
+  authDomain: "cateringsystem-44ceb.firebaseapp.com",
+  projectId: "cateringsystem-44ceb",
+  storageBucket: "cateringsystem-44ceb.firebasestorage.app",
+  messagingSenderId: "268985465363",
+  appId: "1:268985465363:web:85d48a9dbb4e2fd1be9de6",
+  measurementId: "G-PEWKQ1B5HW"
+};
+    firebase.initializeApp(firebaseConfig);
+
+    function register() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(() => alert("Registered"))
+        .catch(err => alert(err.message));
+    }
+
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => window.location.href = "dashboard.html")
+        .catch(err => alert(err.message));
+    }
+    firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("userinfo").innerText = `Logged in as: ${user.email}`;
+  }
+  // Do NOT redirect if already on index.html
+});
+
+  </script>
+</body>
+</html>

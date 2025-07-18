@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Catering Products</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+<body> 
+  <button onclick="location.href='myorders.html'" style="
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  cursor: pointer;
+">My Orders</button>
+<a href="myprofile.html" style="
+background-color:#6f42c1;
+color:white;
+padding:10px 20px;
+border-radius:6px;
+margin-right:10px;
+text-decoration:none;
+">My Profile</a>
+
+  <div class="container">
+    <h2>Catering Products</h2>
+    <button onclick="logout()">Logout</button>
+    <a href="cart.html"><button>View Cart</button></a>
+    <div id="products"></div>
+  </div>
+
+  <script>
+    // ✅ Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpuyyrTBwZJOn-tfyX6r1BQ_p7f65zYV0",
+      authDomain: "cateringsystem-44ceb.firebaseapp.com",
+      projectId: "cateringsystem-44ceb",
+      storageBucket: "cateringsystem-44ceb.firebasestorage.app",
+      messagingSenderId: "268985465363",
+      appId: "1:268985465363:web:85d48a9dbb4e2fd1be9de6",
+      measurementId: "G-PEWKQ1B5HW"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // ✅ Logout function
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      });
+    }
+
+    // ✅ Wait until user is authenticated before loading products
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      // ✅ User is logged in, now load products
+      fetch("/api/products")
+        .then(res => res.json())
+        .then(products => {
+          const container = document.getElementById("products");
+          products.forEach(p => {
+            container.innerHTML += `
+              <div class="card">
+                <img src="${p.image}" alt="${p.name}" class="card-img" />
+                <h3>${p.name}</h3>
+                <p>Price: ₹${p.price}</p>
+                <button onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
+              </div>`;
+          });
+        });
+    });
+
+    // ✅ Add to cart (localStorage-based)
+    function addToCart(product) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert("Added to cart!");
+    }
+  </script>
+</body>
+</html>

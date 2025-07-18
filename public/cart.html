@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Cart</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>My Cart</h2>
+    <div id="cartList"></div>
+    <button onclick="placeOrder()">Place Order</button>
+    <button onclick="clearCart()" style="background-color: #dc3545;">Clear Cart</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script>
+    // ✅ Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpuyyrTBwZJOn-tfyX6r1BQ_p7f65zYV0",
+  authDomain: "cateringsystem-44ceb.firebaseapp.com",
+  projectId: "cateringsystem-44ceb",
+  storageBucket: "cateringsystem-44ceb.firebasestorage.app",
+  messagingSenderId: "268985465363",
+  appId: "1:268985465363:web:85d48a9dbb4e2fd1be9de6",
+  measurementId: "G-PEWKQ1B5HW"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // ✅ Load cart
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const container = document.getElementById("cartList");
+
+    // ✅ Render cart items
+    function renderCart() {
+      container.innerHTML = "";
+
+      if (cart.length === 0) {
+        container.innerHTML = "<p>Your cart is empty.</p>";
+        return;
+      }
+
+      cart.forEach(item => {
+        container.innerHTML += `
+          <div class="card">
+            <img src="${item.image}" alt="${item.name}" class="card-img" />
+            <h3>${item.name}</h3>
+            <p>Price: ₹${item.price}</p>
+            <button onclick="removeFromCart('${item.name}')" style="background-color:red;">Delete</button>
+          </div>
+        `;
+      });
+    }
+
+    // ✅ Remove one item by name
+    function removeFromCart(name) {
+      cart = cart.filter(item => item.name !== name);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    // ✅ Clear entire cart
+    function clearCart() {
+      if (confirm("Are you sure you want to clear your cart?")) {
+        localStorage.removeItem("cart");
+        cart = [];
+        renderCart();
+        alert("Cart cleared!");
+      }
+    }
+
+    // ✅ Place order
+    function placeOrder() {
+      const user = firebase.auth().currentUser;
+      if (!user) return alert("Please log in to place an order.");
+      if (cart.length === 0) return alert("Cart is empty!");
+
+      fetch("http://localhost:3000/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.uid, items: cart })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert("Order placed successfully!");
+        localStorage.removeItem("cart");
+        window.location.href = "myorders.html";
+      })
+      .catch(err => alert("Order failed: " + err.message));
+    }
+
+    // ✅ On load
+    renderCart();
+  </script>
+</body>
+</html>
+

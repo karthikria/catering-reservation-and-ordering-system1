@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Product</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Upload Product</h2>
+    
+    <input type="text" id="name" placeholder="Product Name" required />
+    <input type="number" id="price" placeholder="Price (₹)" required />
+    <input type="text" id="image" placeholder="Image URL (optional)" />
+
+    <button onclick="upload()">Upload Product</button>
+  </div>
+
+  <script>
+    // Optional Firebase config — only needed if using auth or showing user info
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "your-project.firebaseapp.com",
+      projectId: "your-project-id"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Upload function
+    function upload() {
+      const name = document.getElementById("name").value.trim();
+      const price = parseFloat(document.getElementById("price").value);
+      const image = document.getElementById("image").value.trim();
+
+      if (!name || !price) {
+        alert("Please enter name and price.");
+        return;
+      }
+
+      fetch("http://localhost:3000/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, price, image })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to upload");
+        return res.json();
+      })
+      .then(data => {
+        alert(data.message || "Product uploaded successfully!");
+        document.getElementById("name").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("image").value = "";
+      })
+      .catch(err => {
+        alert("Upload failed: " + err.message);
+      });
+    }
+  </script>
+</body>
+</html>

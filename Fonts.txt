@@ -1,0 +1,11 @@
+Fonts used in this design:
+
+Font: Bebas
+Author: Flat-it
+Url: http://www.fontsquirrel.com/fonts/list/find_fonts?q%5Bterm%5D=bebas&q%5Bsearch_check%5D=Y
+
+
+
+Font: Raleway
+Author: The League of Moveable type
+Url: http://www.fontsquirrel.com/fonts/list/find_fonts?q%5Bterm%5D=raleway&q%5Bsearch_check%5D=Y

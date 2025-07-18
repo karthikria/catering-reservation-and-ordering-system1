@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Orders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>My Orders</h2>
+    <div id="orderList"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpuyyrTBwZJOn-tfyX6r1BQ_p7f65zYV0",
+  authDomain: "cateringsystem-44ceb.firebaseapp.com",
+  projectId: "cateringsystem-44ceb",
+  storageBucket: "cateringsystem-44ceb.firebasestorage.app",
+  messagingSenderId: "268985465363",
+  appId: "1:268985465363:web:85d48a9dbb4e2fd1be9de6",
+  measurementId: "G-PEWKQ1B5HW"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    let currentUser = null;
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) {
+        alert("Please log in to view orders.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      currentUser = user;
+
+      // ✅ Now safe to load orders
+      fetch(`/api/myorders?userId=${user.uid}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("orderList");
+          if (data.length === 0) {
+            container.innerHTML = "<p>No orders found.</p>";
+            return;
+          }
+          data.forEach(order => {
+            const orderDate = order.createdAt
+              ? new Date(order.createdAt._seconds * 1000).toLocaleString()
+              : "Unknown time";
+
+            container.innerHTML += `
+              <div class="card">
+                <h3>Order on ${orderDate}</h3>
+                <ul>
+                  ${order.items.map(item => `<li>${item.name} - ₹${item.price}</li>`).join("")}
+                </ul>
+              </div>
+            `;
+          });
+        })
+        .catch(err => {
+          document.getElementById("orderList").innerHTML = `<p>Error loading orders: ${err.message}</p>`;
+        });
+    });
+  </script>
+</body>
+</html>
