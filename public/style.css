@@ -151,4 +151,56 @@ button:hover {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
 }
+/*Responsive for tablets*/
+@media(max-width: 1024px){
+  .container{
+    width: 90%;
+    margin-top: 200px;
+  }
+  .card{
+    width: 45%;
+  }
+  h2{
+    font-size: 24px;
+  }
+}
+/*Responsive for mobile*/
+@media(max-width:600px){
+  body{
+    padding: 10px;
+    background-size: cover;
+
+  }
+  .container{
+    width: 95%;
+    padding: 15px;
+    margin-top: 80px;
+  }
+  input,button,textarea{
+    padding: 10px;
+    font-size: 14px;
+  }
+  .card{
+    width: 100%;
+    padding: 15px;
+  }
+  .card-img{
+    height: 140px;
+  }
+  h2{
+    font-size: 20px;
+  }
+}
+@media(max-width: 400px){
+  h2{
+    font-size: 18px;
+  }
+  input,button{
+    font-size: 12px;
+  }
+  .card-img{
+    height:120px;
+  }
+}
+
 
