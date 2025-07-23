@@ -4,4 +4,5 @@ const serviceAccount = require("./cateringsystem-44ceb-firebase-adminsdk-fbsvc-d
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
+module.exports = admin;
 
